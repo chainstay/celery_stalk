@@ -22,9 +22,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '*erk8bzbxply2)w_t&ffwwt_#d)^q5jdzuz7wrsd-2kp8v2+nf'
 
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*.elasticbeanstalk.com']
 
 CELERY_RESULT_BACKEND = 'redis://redis'
 CELERY_BROKER_URL = 'redis://redis'

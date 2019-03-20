@@ -9,15 +9,17 @@ services:
   web:
     build: .
     command: ['db']  # entrypoint takes postgres host as argument
-    environment:
-      POSTGRES_PASSWORD: local
-    ports:
-      - '8000:8000'
     depends_on:
       - db
+    environment:
+      POSTGRES_PASSWORD: local
+    image: celery_stalk
+    ports:
+      - '8000:8000'
   worker:
     build: .
     entrypoint: ['celery', '-A', 'celery_stalk', 'worker', '-l', 'INFO']
     depends_on:
       - web
       - redis
+    image: celery_stalk
