@@ -2,3 +2,8 @@ __pycache__
 *.pyc
 .vscode
 *.sqlite3
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml

@@ -1,0 +1,23 @@
+version: '3.7'
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: local
+  redis:
+    image: redis
+  web:
+    build: .
+    command: ['db']  # entrypoint takes postgres host as argument
+    environment:
+      POSTGRES_PASSWORD: local
+    ports:
+      - '8000:8000'
+    depends_on:
+      - db
+  worker:
+    build: .
+    entrypoint: ['celery', '-A', 'celery_stalk', 'worker', '-l', 'INFO']
+    depends_on:
+      - web
+      - redis

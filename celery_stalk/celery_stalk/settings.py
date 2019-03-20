@@ -20,19 +20,17 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv(
-    'DJANGO_SECRET_KEY',
-    '*erk8bzbxply2)w_t&ffwwt_#d)^q5jdzuz7wrsd-2kp8v2+nf'
-)
+SECRET_KEY = '*erk8bzbxply2)w_t&ffwwt_#d)^q5jdzuz7wrsd-2kp8v2+nf'
 
-DEBUG = os.getenv('DJANGO_DEBUG', False)
+DEBUG = True
 
 ALLOWED_HOSTS = []
 
-ALLOWED_HOSTS.append(os.getenv('DJANGO_ADDTL_HOSTS').split(','))
-
-CELERY_RESULT_BACKEND = 'redis://'
-CELERY_BROKER_URL = 'redis://'
+CELERY_RESULT_BACKEND = 'redis://redis'
+CELERY_BROKER_URL = 'redis://redis'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
 
 # Application definition
 
@@ -81,8 +79,12 @@ WSGI_APPLICATION = 'celery_stalk.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': 'local',
+        'HOST': 'db',
+        'PORT': 5432,
     }
 }
 
