@@ -20,4 +20,4 @@ def task(request):
     if task.ready():
         return HttpResponse('<h1 style="font-size: 10rem">{}</h1>'.format(unicode(task.result)))
 
-    return HttpResponse('Sit tight... it\'s still growing'.format(task.status))
+    return HttpResponse('Sit tight... it\'s still growing')
