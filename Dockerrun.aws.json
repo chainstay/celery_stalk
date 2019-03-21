@@ -5,6 +5,12 @@
       "name": "web",
       "image": "248213449538.dkr.ecr.us-east-1.amazonaws.com/celery_stalk:latest",
       "essential": true,
+      "environment": [
+        {
+          "name": "POSTGRES_PASSWORD",
+          "value": "local"
+        }
+      ],
       "memoryReservation": 128,
       "portMappings": [
         {
@@ -21,6 +27,12 @@
       "image": "248213449538.dkr.ecr.us-east-1.amazonaws.com/celery_stalk:latest",
       "essential": true,
       "memoryReservation": 128,
+      "environment": [
+        {
+          "name": "RUN_AS_WORKER",
+          "value": "TRUE"
+        }
+      ],
       "links": [
         "redis"
       ]

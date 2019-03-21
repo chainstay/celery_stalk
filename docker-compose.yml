@@ -18,7 +18,8 @@ services:
       - '8000:8000'
   worker:
     build: .
-    entrypoint: ['celery', '-A', 'celery_stalk', 'worker', '-l', 'INFO']
+    environment:
+      RUN_AS_WORKER: "TRUE"
     depends_on:
       - web
       - redis
