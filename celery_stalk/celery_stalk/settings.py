@@ -29,8 +29,8 @@ ALLOWED_HOSTS = [
     'celery-stalk-develop.us-east-1.elasticbeanstalk.com'
 ]
 
-CELERY_RESULT_BACKEND = 'redis://redis'
-CELERY_BROKER_URL = 'redis://redis'
+CELERY_RESULT_BACKEND = 'redis://redis.local'
+CELERY_BROKER_URL = 'redis://redis.local'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
@@ -86,7 +86,7 @@ DATABASES = {
         'NAME': 'postgres',
         'USER': 'postgres',
         'PASSWORD': 'local',
-        'HOST': 'db',
+        'HOST': 'db.local',
         'PORT': 5432,
     }
 }

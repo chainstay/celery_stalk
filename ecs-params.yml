@@ -1,0 +1,21 @@
+version: 1
+task_definition:
+  task_execution_role: ecsTaskExecutionRole
+  ecs_network_mode: awsvpc
+  task_size:
+    mem_limit: 0.5GB
+    cpu_limit: 256
+run_params:
+  network_configuration:
+    awsvpc_configuration:
+      subnets:
+        - "subnet-01f776f1cc4b1055f"
+        - "subnet-087937175c0326c5e"
+      security_groups:
+        - "sg-0d03f0f2dfabcec6c"
+      assign_public_ip: ENABLED
+    service_discovery_service:
+        name: local
+        description: Cloud local DNS
+        dns_config:
+          type: A

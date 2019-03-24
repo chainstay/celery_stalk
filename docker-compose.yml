@@ -1,21 +1,40 @@
-version: '3.7'
+version: '3'
 services:
   db:
     image: postgres
     environment:
       POSTGRES_PASSWORD: local
+    networks:
+      back-end:
+        aliases:
+          - db.local
   redis:
     image: redis
+    networks:
+      back-end:
+        aliases:
+          - redis.local
   web:
     build: .
-    command: ['db']  # entrypoint takes postgres host as argument
     depends_on:
       - db
+      - redis
     environment:
       POSTGRES_PASSWORD: local
-    image: celery_stalk
+    image: 248213449538.dkr.ecr.us-east-1.amazonaws.com/celery_stalk
     ports:
       - '8000:8000'
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: ecs-celery-stalk
+        awslogs-region: us-east-1
+        awslogs-stream-prefix: web
+    networks:
+      front-end:
+      back-end:
+        aliases:
+          - worker.local
   worker:
     build: .
     environment:
@@ -23,4 +42,17 @@ services:
     depends_on:
       - web
       - redis
-    image: celery_stalk
+    image: 248213449538.dkr.ecr.us-east-1.amazonaws.com/celery_stalk
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: ecs-celery-stalk
+        awslogs-region: us-east-1
+        awslogs-stream-prefix: worker
+    networks:
+      back-end:
+        aliases:
+          - worker.local
+networks:
+  front-end:
+  back-end:
