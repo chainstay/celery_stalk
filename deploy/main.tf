@@ -1,5 +1,6 @@
 locals {
-  app_prefix = "${var.application}"
+  app_prefix             = "${var.application}"
+  codebuild_project_name = "${var.application}-build-image"
 }
 
 terraform {
@@ -36,7 +37,7 @@ data "aws_iam_policy_document" "codepipeline_assume_role" {
 }
 
 resource "aws_iam_role" "codepipeline" {
-  name               = "celery-stalk-codepipeline"
+  name               = "${var.application}-codepipeline"
   assume_role_policy = "${data.aws_iam_policy_document.codepipeline_assume_role.json}"
 }
 
@@ -67,6 +68,60 @@ resource "aws_iam_policy" "codepipeline" {
   name   = "${var.application}-codepipeline-policy"
   path   = "/service-role/"
   policy = "${data.aws_iam_policy_document.codepipeline.json}"
+}
+
+resource "aws_iam_role_policy_attachment" "codepipeline" {
+  policy_arn = "${aws_iam_policy.codepipeline.arn}"
+  role       = "${aws_iam_role.codepipeline.id}"
+}
+
+resource "aws_codepipeline" "source_build" {
+  # TODO: Name pipeline by the branch it builds
+  name     = "${var.application}-master-pipeline"
+  role_arn = "${aws_iam_role.codepipeline.arn}"
+
+  artifact_store = {
+    location = "${aws_s3_bucket.codepipeline_state.bucket}"
+    type     = "S3"
+  }
+
+  stage {
+    name = "Source"
+
+    action {
+      name             = "Source"
+      category         = "Source"
+      owner            = "ThirdParty"
+      provider         = "GitHub"
+      version          = "1"
+      output_artifacts = ["celery_stalk"]
+
+      # TODO: Interpolate these variables
+      configuration = {
+        OAuthToken = "${var.github_oauth_token}"
+        Owner      = "chainstay"
+        Repo       = "celery_stalk"
+        Branch     = "master"
+      }
+    }
+  }
+
+  stage {
+    name = "Build"
+
+    action {
+      name            = "Build"
+      category        = "Build"
+      owner           = "AWS"
+      provider        = "CodeBuild"
+      version         = "1"
+      input_artifacts = ["celery_stalk"]
+
+      configuration = {
+        ProjectName = "${local.codebuild_project_name}"
+      }
+    }
+  }
 }
 
 #
@@ -103,6 +158,7 @@ data "aws_iam_policy_document" "codebuild" {
       "logs:CreateLogGroup",
       "logs:CreateLogStream",
       "logs:PutLogEvents",
+      "s3:*",
       "ssm:GetParameters",
     ]
 
@@ -122,7 +178,7 @@ resource "aws_iam_role_policy_attachment" "codebuild" {
 }
 
 resource "aws_codebuild_project" "build_image" {
-  name         = "${var.application}-build-image"
+  name         = "${local.codebuild_project_name}"
   service_role = "${aws_iam_role.codebuild.arn}"
 
   artifacts {
