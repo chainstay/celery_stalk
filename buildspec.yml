@@ -26,10 +26,10 @@ phases:
 artifacts:
   secondary-artifacts:
     dockerrunweb:
-      base-directory: $CODEBUILD_SRC_DIR_web
+      base-directory: ./web
       files:
         - Dockerrun.aws.json
     dockerrunworker:
-      base-directory: $CODEBUILD_SRC_DIR_worker
+      base-directory: ./worker
       files:
         - Dockerrun.aws.json
