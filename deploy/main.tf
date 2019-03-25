@@ -110,12 +110,13 @@ resource "aws_codepipeline" "source_build" {
     name = "Build"
 
     action {
-      name            = "Build"
-      category        = "Build"
-      owner           = "AWS"
-      provider        = "CodeBuild"
-      version         = "1"
-      input_artifacts = ["celery_stalk"]
+      name             = "Build"
+      category         = "Build"
+      owner            = "AWS"
+      provider         = "CodeBuild"
+      version          = "1"
+      input_artifacts  = ["celery_stalk"]
+      output_artifacts = ["dockerrun-web", "dockerrun-worker"]
 
       configuration = {
         ProjectName = "${local.codebuild_project_name}"
@@ -182,7 +183,9 @@ resource "aws_codebuild_project" "build_image" {
   service_role = "${aws_iam_role.codebuild.arn}"
 
   artifacts {
-    type = "NO_ARTIFACTS"
+    # this build does generate artifacts, however they must be identifiable by
+    # name in order to send them to distinct codepipeline stages. See secondary_artifacts
+    type = "CODEPIPELINE"
   }
 
   environment {
@@ -213,8 +216,19 @@ resource "aws_codebuild_project" "build_image" {
   }
 
   source {
-    type                = "GITHUB"
-    location            = "${var.codebuild_github_source}"
-    report_build_status = true
+    type = "CODEPIPELINE"
   }
+
+  # secondary_artifacts = [
+  #   {
+  #     artifact_identifier = "dockerrun-web"
+  #     encryption_disabled = true
+  #     type                = "CODEPIPELINE"
+  #   },
+  #   {
+  #     artifact_identifier = "dockerrun-worker"
+  #     encryption_disabled = true
+  #     type                = "CODEPIPELINE"
+  #   },
+  # ]
 }

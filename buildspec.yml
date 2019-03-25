@@ -1,11 +1,5 @@
 version: 0.2
 
-# eb_codebuild_settings:
-#   CodeBuildServiceRole: arn:aws:iam::248213449538:role/service-role/codebuild-celery_stalk-service-role
-#   ComputeType: BUILD_GENERAL1_SMALL
-#   Image: aws/codebuild/docker:18.09.0
-#   Timeout: 60
-
 phases:
   pre_build:
     commands:
@@ -22,3 +16,20 @@ phases:
       - echo Build completed on `date`
       - echo Pushing the Docker image...
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+      - echo Creating Dockerrun.aws.json files for web and worker...
+      - apt-get update
+      - apt-get install -y gettext-base
+      - mkdir web worker
+      - export VERSION=latest
+      - envsubst < deploy/Dockerrun.WEB.aws.json > web/Dockerrun.aws.json
+      - envsubst < deploy/Dockerrun.WORKER.aws.json > worker/Dockerrun.aws.json
+artifacts:
+  secondary-artifacts:
+    dockerrun-web:
+      base-directory: $CODEBUILD_SRC_DIR_web
+      files:
+        - Dockerrun.aws.json
+    dockerrun-worker:
+      base-directory: $CODEBUILD_SRC_DIR_worker
+      files:
+        - Dockerrun.aws.json

@@ -1,0 +1,14 @@
+{
+  "AWSEBDockerrunVersion": "1",
+  "Image": {
+    "Name": "248213449538.dkr.ecr.us-east-1.amazonaws.com/celery_stalk:${VERSION}",
+    "Update": "true"
+  },
+  "Ports": [
+    {
+      "ContainerPort": "8000",
+      "HostPort": "80"
+    }
+  ],
+  "Entrypoint": "/docker_entrypoint.sh"
+}

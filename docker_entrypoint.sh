@@ -2,8 +2,8 @@
 
 set -e
 
-if ["$RUN_AS_WORKER" !== ""]; then
-  until PGPASSWORD=$POSTGRES_PASSWORD psql -h db.local -U "postgres" -c '\q'; do
+if ["$LOCAL" !== "" && "$RUN_AS_WORKER" !== ""]; then
+  until PGPASSWORD=$POSTGRES_PASSWORD psql -h $POSTGRES_HOST -U "postgres" -c '\q'; do
     >&2 echo "Postgres is unavailable - sleeping"
     sleep 1
   done
