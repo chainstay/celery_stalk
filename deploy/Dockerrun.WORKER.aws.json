@@ -1,7 +1,7 @@
 {
   "AWSEBDockerrunVersion": "1",
   "Image": {
-    "Name": "${$AWS_ACCOUNT_ID}.dkr.ecr.${$AWS_DEFAULT_REGION}.amazonaws.com/${$IMAGE_REPO_NAME}:${IMAGE_TAG}",
+    "Name": "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${IMAGE_TAG}",
     "Update": "true"
   },
   "Entrypoint": "RUN_AS_WORKER=TRUE /docker_entrypoint.sh"
