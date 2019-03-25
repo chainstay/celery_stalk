@@ -116,7 +116,7 @@ resource "aws_codepipeline" "source_build" {
       provider         = "CodeBuild"
       version          = "1"
       input_artifacts  = ["celery_stalk"]
-      output_artifacts = ["dockerrun-web", "dockerrun-worker"]
+      output_artifacts = ["dockerrunweb", "dockerrunworker"]
 
       configuration = {
         ProjectName = "${local.codebuild_project_name}"

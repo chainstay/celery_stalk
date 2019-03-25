@@ -25,11 +25,11 @@ phases:
       - envsubst < deploy/Dockerrun.WORKER.aws.json > worker/Dockerrun.aws.json
 artifacts:
   secondary-artifacts:
-    dockerrun-web:
+    dockerrunweb:
       base-directory: $CODEBUILD_SRC_DIR_web
       files:
         - Dockerrun.aws.json
-    dockerrun-worker:
+    dockerrunworker:
       base-directory: $CODEBUILD_SRC_DIR_worker
       files:
         - Dockerrun.aws.json
